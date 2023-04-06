@@ -1,4 +1,4 @@
-package geometry;
+package mvc;
 
 public interface Moveable {
 

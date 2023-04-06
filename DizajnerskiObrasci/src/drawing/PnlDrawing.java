@@ -4,19 +4,16 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import geometry.Rectangle;
-import geometry.Shape;
-import geometry.Point;
-import geometry.Circle;
-import geometry.Donut;
-import geometry.Line;
-import java.awt.GridBagLayout;
+import mvc.Shape;
+
 import java.util.ArrayList;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
 public class PnlDrawing extends JPanel {
 
+	private static final long serialVersionUID = 1L;
+	
 	public ArrayList<Shape> listOfShapes = new ArrayList<Shape>();
 	
 	/**

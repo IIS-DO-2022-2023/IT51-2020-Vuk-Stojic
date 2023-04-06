@@ -10,38 +10,27 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JToggleButton;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
 
 import java.awt.FlowLayout;
-import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.ButtonGroup;
-
-import geometry.Line;
-import geometry.Point;
-import geometry.Rectangle;
-import geometry.Shape;
-import geometry.Circle;
-import geometry.Donut;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+
+import mvc.Circle;
+import mvc.Donut;
+import mvc.Line;
+import mvc.Point;
+import mvc.Rectangle;
+import mvc.Shape;
 
 public class PnlFrame extends JFrame {
 	
+	private static final long serialVersionUID = 1L;
 	protected JToggleButton tglbtnPoint = new JToggleButton("Point");
 	protected JToggleButton tglbtnLine = new JToggleButton("Line");
 	protected JToggleButton tglbtnRectangle = new JToggleButton("Rectangle");
@@ -57,8 +46,6 @@ public class PnlFrame extends JFrame {
 	protected int numOfClicks = 0;
 	protected int p1X = 0;
 	protected int p1Y = 0;
-	protected boolean clickedDelete = false;
-	protected boolean clickedModify = false;
 	protected int numOfSelects = 0;
 	
 	private JPanel contentPane;
@@ -108,7 +95,60 @@ public class PnlFrame extends JFrame {
 		
 	}
 	
-	protected void selectShape() {
+	protected void selectActualShape() {
+		
+		boolean foundShape = false;
+		
+		for (int i = pnlDrawing.listOfShapes.size() - 1; i > -1; i--) {
+			
+			Shape s = pnlDrawing.listOfShapes.get(i);
+			
+			if(s.contains(clickDetails.getX(), clickDetails.getY())) {
+				
+				if(s.isSelected())
+					s.setSelected(false);
+				
+				else
+					s.setSelected(true);
+				
+				repaint();
+				foundShape = true;
+				break;
+			}	
+			
+		}
+		
+		if(!foundShape) {
+			for(Shape s2 : pnlDrawing.listOfShapes) {
+				s2.setSelected(false);
+				repaint();
+			}
+		}
+		
+	foundShape = false;
+		
+		/*for (Shape s : pnlDrawing.listOfShapes) {
+		
+			if(s.contains(clickDetails.getX(), clickDetails.getY())) {
+				
+				s.setSelected(true);
+				numOfSelects++;
+				
+				if(numOfSelects > 1) {
+					
+					pnlDrawing.listOfShapes.get(pnlDrawing.findSelected()).setSelected(false);
+					numOfSelects = 1;
+					
+				}
+				
+				repaint();
+				
+			}
+		}*/
+		
+	}
+	
+	protected void modifyShape() {
 			
 			for (Shape s : pnlDrawing.listOfShapes) {
 				
@@ -120,60 +160,27 @@ public class PnlFrame extends JFrame {
 					if(s.isSelected()) {
 						
 						//Modify function
-						if(clickedModify) {
 							
-							pointDialog.textFieldX.setEditable(true);
-							pointDialog.textFieldY.setEditable(true);
-							pointDialog.textFieldX.setText(String.valueOf(temp.getX()));
-							pointDialog.textFieldY.setText(String.valueOf(temp.getY()));
-							pointDialog.setVisible(true);
-							
-							if(pointDialog.isOk) {
-								
-								pnlDrawing.addShape(new Point(Integer.valueOf(pointDialog.textFieldX.getText()), Integer.valueOf(pointDialog.textFieldY.getText()), pointDialog.color));
-								pnlDrawing.removeShape(s);
-								numOfSelects--;
-								pointDialog.color = Color.black;
-								
-							}
-							
-							clickedModify = false;
-							pointDialog.isOk = false;
-						}
+						pointDialog.modifyDialog(temp);
 						
-						//Delete function
-						else if(clickedDelete) {
+						if(pointDialog.isOk) {
 							
+							pnlDrawing.addShape(new Point(Integer.valueOf(pointDialog.textFieldX.getText()), Integer.valueOf(pointDialog.textFieldY.getText()), pointDialog.color));
 							pnlDrawing.removeShape(s);
-							numOfSelects--;
-							clickedDelete = false;
+							//numOfSelects--;
+							pointDialog.color = Color.black;
 							
 						}
 						
-						s.setSelected(false);
-						numOfSelects--;
-						repaint();
-						
+						pointDialog.isOk = false;
 					}
 					
-					//Select Function
-					if(s.contains(clickDetails.getX(), clickDetails.getY())) {
-						
-						s.setSelected(true);
-						numOfSelects++;
-						
-						if(numOfSelects > 1) {
-							
-							pnlDrawing.listOfShapes.get(pnlDrawing.findSelected()).setSelected(false);
-							numOfSelects = 1;
-							
-						}
-						
-						repaint();
-						
-					}
+					s.setSelected(false);
+					//numOfSelects--;
+					repaint();
 					
-			}
+				}
+
 				
 				if(s instanceof Line) {
 					
@@ -186,63 +193,24 @@ public class PnlFrame extends JFrame {
 						numOfSelects--;
 						
 						repaint();
+
+							
+						lineDialog.modifyDialog(temp);
 						
-						//Modify function
-						if(clickedModify) {
+						if(lineDialog.isOk) {
 							
-							lineDialog.textFieldX1.setEditable(true);
-							lineDialog.textFieldY1.setEditable(true);
-							lineDialog.textFieldX2.setEditable(true);
-							lineDialog.textFieldY2.setEditable(true);
-							lineDialog.textFieldX1.setText(String.valueOf(temp.getStartPoint().getX()));
-							lineDialog.textFieldY1.setText(String.valueOf(temp.getStartPoint().getY()));
-							lineDialog.textFieldX2.setText(String.valueOf(temp.getEndPoint().getX()));
-							lineDialog.textFieldY2.setText(String.valueOf(temp.getEndPoint().getY()));
-							lineDialog.setVisible(true);
-							
-							if(lineDialog.isOk) {
-								
-								pnlDrawing.addShape(new Line(new Point(Integer.valueOf(lineDialog.textFieldX1.getText()), Integer.valueOf(lineDialog.textFieldY1.getText())), new Point(Integer.valueOf(lineDialog.textFieldX2.getText()), Integer.valueOf(lineDialog.textFieldY2.getText())), lineDialog.color));
-								pnlDrawing.removeShape(s);
-								numOfSelects--;
-								lineDialog.color = Color.black;
-								
-							}
-							
-							lineDialog.isOk = false;
-							clickedModify = false;
-							
-						}
-						
-						//Delete function
-						if(clickedDelete) {
-							
+							pnlDrawing.addShape(new Line(new Point(Integer.valueOf(lineDialog.textFieldX1.getText()), Integer.valueOf(lineDialog.textFieldY1.getText())), new Point(Integer.valueOf(lineDialog.textFieldX2.getText()), Integer.valueOf(lineDialog.textFieldY2.getText())), lineDialog.color));
 							pnlDrawing.removeShape(s);
 							numOfSelects--;
-							clickedDelete = false;
+							lineDialog.color = Color.black;
 							
 						}
 						
+						lineDialog.isOk = false;					
 					}
+				
 					
-					//Select Function
-					if(temp.contains(clickDetails.getX(), clickDetails.getY())) {
-							
-							s.setSelected(true);
-							numOfSelects++;
-							
-							if(numOfSelects > 1) {
-								
-								pnlDrawing.listOfShapes.get(pnlDrawing.findSelected()).setSelected(false);
-								numOfSelects = 1;
-								
-							}
-							
-							repaint();
-							
-						}
-						
-					}
+				}
 				
 				if(s instanceof Rectangle) {
 					
@@ -255,66 +223,24 @@ public class PnlFrame extends JFrame {
 						numOfSelects--;
 						
 						repaint();
+							
+						rectDialog.modifyDialog(temp);
 						
-						//Modify function
-						if(clickedModify) {
+						if(rectDialog.isOk) {
 							
-							rectDialog.textFieldX.setEditable(true);
-							rectDialog.textFieldY.setEditable(true);
-							rectDialog.textFieldWidth.setEditable(true);
-							rectDialog.textFieldHeight.setEditable(true);
-							rectDialog.textFieldX.setText(String.valueOf(temp.getUpperLeftPoint().getX()));
-							rectDialog.textFieldY.setText(String.valueOf(temp.getUpperLeftPoint().getY()));
-							rectDialog.textFieldWidth.setText(String.valueOf(temp.getWidth()));
-							rectDialog.textFieldHeight.setText(String.valueOf(temp.getHeight()));
-							rectDialog.color = temp.getColor();
-							rectDialog.innerColor = temp.getInnerColor();
-							rectDialog.setVisible(true);
-							
-							if(rectDialog.isOk) {
-								
-								pnlDrawing.addShape(new Rectangle(new Point(Integer.valueOf(rectDialog.textFieldX.getText()), Integer.valueOf(rectDialog.textFieldY.getText())), Integer.valueOf(rectDialog.textFieldWidth.getText()), Integer.valueOf(rectDialog.textFieldHeight.getText()), rectDialog.color, rectDialog.innerColor));
-								pnlDrawing.removeShape(s);
-								numOfSelects--;
-								rectDialog.innerColor = new Color(0f, 0f, 0f, 0f);
-								rectDialog.color = Color.black;
-								
-							}
-							
-							rectDialog.isOk = false;
-							clickedModify = false;
-							
-						}
-						
-						//Delete function
-						if(clickedDelete) {
-							
+							pnlDrawing.addShape(new Rectangle(new Point(Integer.valueOf(rectDialog.textFieldX.getText()), Integer.valueOf(rectDialog.textFieldY.getText())), Integer.valueOf(rectDialog.textFieldWidth.getText()), Integer.valueOf(rectDialog.textFieldHeight.getText()), rectDialog.color, rectDialog.innerColor));
 							pnlDrawing.removeShape(s);
 							numOfSelects--;
-							clickedDelete = false;
+							rectDialog.innerColor = new Color(0f, 0f, 0f, 0f);
+							rectDialog.color = Color.black;
 							
 						}
+						
+						rectDialog.isOk = false;
 						
 					}
 					
-					//Select Function
-					if(temp.contains(clickDetails.getX(), clickDetails.getY())) {
-							
-							s.setSelected(true);
-							numOfSelects++;
-							
-							if(numOfSelects > 1) {
-								
-								pnlDrawing.listOfShapes.get(pnlDrawing.findSelected()).setSelected(false);
-								numOfSelects = 1;
-								
-							}
-							
-							repaint();
-							
-						}
-						
-					}
+				}
 				
 				if(s instanceof Circle && s instanceof Donut == false) {
 					
@@ -327,64 +253,24 @@ public class PnlFrame extends JFrame {
 						numOfSelects--;
 						
 						repaint();
+							
+						circleDialog.modifyDialog(temp);
 						
-						//Modify function
-						if(clickedModify) {
+						if(circleDialog.isOk) {
 							
-							circleDialog.textFieldX.setEditable(true);
-							circleDialog.textFieldY.setEditable(true);
-							circleDialog.textFieldRadius.setEditable(true);
-							circleDialog.textFieldX.setText(String.valueOf(temp.getCenter().getX()));
-							circleDialog.textFieldY.setText(String.valueOf(temp.getCenter().getY()));
-							circleDialog.textFieldRadius.setText(String.valueOf(temp.getRadius()));
-							circleDialog.color = temp.getColor();
-							circleDialog.innerColor = temp.getInnerColor();
-							circleDialog.setVisible(true);
-							
-							if(circleDialog.isOk) {
-								
-								pnlDrawing.addShape(new Circle(new Point(Integer.valueOf(circleDialog.textFieldX.getText()), Integer.valueOf(circleDialog.textFieldY.getText())), Integer.valueOf(circleDialog.textFieldRadius.getText()), circleDialog.color, circleDialog.innerColor));
-								pnlDrawing.removeShape(s);
-								numOfSelects--;
-								circleDialog.color = Color.black;
-								circleDialog.innerColor = new Color(0f, 0f, 0f, 0f);
-								
-							}
-							
-							circleDialog.isOk = false;
-							clickedModify = false;
-							
-						}
-						
-						//Delete Function
-						if(clickedDelete) {
-							
+							pnlDrawing.addShape(new Circle(new Point(Integer.valueOf(circleDialog.textFieldX.getText()), Integer.valueOf(circleDialog.textFieldY.getText())), Integer.valueOf(circleDialog.textFieldRadius.getText()), circleDialog.color, circleDialog.innerColor));
 							pnlDrawing.removeShape(s);
 							numOfSelects--;
-							clickedDelete = false;
+							circleDialog.color = Color.black;
+							circleDialog.innerColor = new Color(0f, 0f, 0f, 0f);
 							
 						}
+						
+						circleDialog.isOk = false;
 						
 					}
 					
-					//Select Function
-					if(temp.contains(clickDetails.getX(), clickDetails.getY())) {
-							
-							s.setSelected(true);
-							numOfSelects++;
-							
-							if(numOfSelects > 1) {
-								
-								pnlDrawing.listOfShapes.get(pnlDrawing.findSelected()).setSelected(false);
-								numOfSelects = 1;
-								
-							}
-							
-							repaint();
-							
-						}
-						
-					}
+				}
 				
 				if(s instanceof Donut) {
 					
@@ -392,74 +278,47 @@ public class PnlFrame extends JFrame {
 					
 					if(s.isSelected()) {
 						
-						s.setSelected(false);
-						
-						numOfSelects--;
-						
-						repaint();
-						
-						//Modify Function
-						if(clickedModify) {
-							
-							donutDialog.textFieldX.setEditable(true);
-							donutDialog.textFieldY.setEditable(true);
-							donutDialog.textFieldRadius.setEditable(true);
-							donutDialog.textFieldInnerRadius.setEditable(true);
-							donutDialog.textFieldX.setText(String.valueOf(temp.getCenter().getX()));
-							donutDialog.textFieldY.setText(String.valueOf(temp.getCenter().getY()));
-							donutDialog.textFieldRadius.setText(String.valueOf(temp.getRadius()));
-							donutDialog.textFieldInnerRadius.setText(String.valueOf(temp.getInnerRadius()));
-							donutDialog.color = temp.getColor();
-							donutDialog.innerColor = temp.getInnerColor();
-							donutDialog.setVisible(true);
-							
-							if(donutDialog.isOk) {
-								
-								pnlDrawing.addShape(new Donut((new Point(Integer.valueOf(donutDialog.textFieldX.getText()), Integer.valueOf(donutDialog.textFieldY.getText()))), Integer.valueOf(donutDialog.textFieldRadius.getText()), Integer.valueOf(donutDialog.textFieldInnerRadius.getText()), donutDialog.color, donutDialog.innerColor));
-
-								pnlDrawing.removeShape(s);
-								numOfClicks--;
-								donutDialog.color = Color.black;
-								circleDialog.innerColor = Color.white;
-								
-							}
-							
-							donutDialog.isOk = false;
-							clickedModify = false;
-							
-						}
-						
-						//Delete Function
-						else if(clickedDelete) {
-							
-							pnlDrawing.removeShape(s);
-							numOfSelects--;
-							clickedDelete = false;
-							
-						}
-						
-					}
+					s.setSelected(false);
 					
-					//Select Function
-					if(temp.contains(clickDetails.getX(), clickDetails.getY())) {
+					numOfSelects--;
+					
+					repaint();
 						
-							s.setSelected(true);
-							numOfSelects++;
+						donutDialog.modifyDialog(temp);
+						
+						if(donutDialog.isOk) {
 							
-							if(numOfSelects > 1) {
-								
-								pnlDrawing.listOfShapes.get(pnlDrawing.findSelected()).setSelected(false);
-								numOfSelects = 1;
-								
-							}
-							
-							repaint();
+							pnlDrawing.addShape(new Donut((new Point(Integer.valueOf(donutDialog.textFieldX.getText()), Integer.valueOf(donutDialog.textFieldY.getText()))), Integer.valueOf(donutDialog.textFieldRadius.getText()), Integer.valueOf(donutDialog.textFieldInnerRadius.getText()), donutDialog.color, donutDialog.innerColor));
+
+							pnlDrawing.removeShape(s);
+							numOfClicks--;
+							donutDialog.color = Color.black;
+							circleDialog.innerColor = Color.white;
 							
 						}
 						
+						donutDialog.isOk = false;
+						
 					}
+										
+				}
 				
 				
+		}
+		
+	}
+	
+	protected void deleteShape() {
+		
+		for (Shape s : pnlDrawing.listOfShapes) {
+			
+			if(s.isSelected()) {
+				
+				//Delete Function
+				pnlDrawing.removeShape(s);
+			
+				
+			}
 		}
 		
 	}
@@ -519,8 +378,12 @@ public class PnlFrame extends JFrame {
 		btnModify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				clickedModify = true;
-				selectShape();
+				for(Shape s : pnlDrawing.listOfShapes)
+					if(s.isSelected()) {
+						modifyShape();
+					}
+				
+				
 				
 			}
 		});
@@ -532,8 +395,7 @@ public class PnlFrame extends JFrame {
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				clickedDelete = true;
-				selectShape();
+				deleteShape();
 				
 				if(tglbtnDraw.isSelected()) {
 					
@@ -611,11 +473,14 @@ public class PnlFrame extends JFrame {
 				
 				clickDetails = e;
 				
-				if(tglbtnSelect.isSelected())
-					selectShape();
+				if(tglbtnSelect.isSelected()) {
+					selectActualShape();
+					return;
+				}
+					
 				
 				
-				if(tglbtnDraw.isSelected()) {
+				else if(tglbtnDraw.isSelected()) {
 					
 					//Point drawing
 					if(tglbtnPoint.isSelected()) {
@@ -669,7 +534,6 @@ public class PnlFrame extends JFrame {
 							pnlDrawing.addShape(new Line(new Point(p1X, p1Y), new Point(e.getX(), e.getY()), lineDialog.color));
 							lineDialog.color = Color.black;
 							pnlDrawing.removeShape(l1);
-							selectShape();
 							if(!lineDialog.isOk)
 								pnlDrawing.removeShape(new Line(new Point(p1X, p1Y), new Point(e.getX(), e.getY())));
 							lineDialog.isOk = false;

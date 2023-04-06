@@ -9,6 +9,9 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import mvc.Rectangle;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,13 +24,16 @@ import java.awt.event.ActionEvent;
 
 public class RectDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	protected JTextField textFieldX;
 	protected JTextField textFieldY;
 	protected JTextField textFieldWidth;
 	protected JTextField textFieldHeight;
 	protected boolean isOk = false;
-	private boolean error = false;
 	protected Color color = Color.black;
 	protected Color innerColor = new Color(0f, 0f, 0f, 0f);
 
@@ -158,21 +164,14 @@ public class RectDialog extends JDialog {
 								
 							}
 							
+							isOk = true;
+							setVisible(false);	
 							
 							}catch (Exception badInput){
 							
 							JOptionPane.showMessageDialog(null, "Invalid input!");
-							error = true;
 							
 						}
-						
-						if(!error) {
-							
-							isOk = true;
-							setVisible(false);	
-							
-						}
-						error = false;
 					}
 				});
 				{
@@ -214,6 +213,22 @@ public class RectDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	
+	protected void modifyDialog(Rectangle input) {
+		
+		textFieldX.setEditable(true);
+		textFieldY.setEditable(true);
+		textFieldWidth.setEditable(true);
+		textFieldHeight.setEditable(true);
+		textFieldX.setText(String.valueOf(input.getUpperLeftPoint().getX()));
+		textFieldY.setText(String.valueOf(input.getUpperLeftPoint().getY()));
+		textFieldWidth.setText(String.valueOf(input.getWidth()));
+		textFieldHeight.setText(String.valueOf(input.getHeight()));
+		color = input.getColor();
+		innerColor = input.getInnerColor();
+		setVisible(true);
+		
 	}
 
 }

@@ -1,4 +1,4 @@
-package geometry;
+package mvc;
 
 import java.awt.Color;
 import java.awt.Graphics;

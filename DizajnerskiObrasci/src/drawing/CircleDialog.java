@@ -9,6 +9,9 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import mvc.Circle;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,12 +24,12 @@ import java.awt.event.ActionEvent;
 
 public class CircleDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	protected JTextField textFieldX;
 	protected JTextField textFieldRadius;
 	protected JTextField textFieldY;
 	protected boolean isOk = false;
-	private boolean error = false;
 	protected Color color = Color.black;
 	protected Color innerColor = new Color(0f, 0f, 0f, 0f);
 
@@ -138,20 +141,14 @@ public class CircleDialog extends JDialog {
 							}
 							
 							
-							}catch (Exception badInput){
-							
-							JOptionPane.showMessageDialog(null, "Invalid input!");
-							error = true;
-							
-						}
-						
-						if(!error) {
-							
 							isOk = true;
 							setVisible(false);
 							
+							}catch (Exception badInput){
+							
+							JOptionPane.showMessageDialog(null, "Invalid input!");
+							
 						}
-						error = false;
 						
 					}
 				});
@@ -194,6 +191,18 @@ public class CircleDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	
+	protected void modifyDialog(Circle input) {
+		textFieldX.setEditable(true);
+		textFieldY.setEditable(true);
+		textFieldRadius.setEditable(true);
+		textFieldX.setText(String.valueOf(input.getCenter().getX()));
+		textFieldY.setText(String.valueOf(input.getCenter().getY()));
+		textFieldRadius.setText(String.valueOf(input.getRadius()));
+		color = input.getColor();
+		innerColor = input.getInnerColor();
+		setVisible(true);
 	}
 
 }

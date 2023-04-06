@@ -2,6 +2,13 @@ package geometry;
 
 import java.util.Arrays;
 
+import mvc.Circle;
+import mvc.Donut;
+import mvc.Line;
+import mvc.Point;
+import mvc.Rectangle;
+import mvc.Shape;
+
 public class Test {
 
 	public static void main(String[] args) {

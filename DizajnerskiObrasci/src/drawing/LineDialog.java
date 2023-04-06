@@ -10,8 +10,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import geometry.Line;
-import geometry.Point;
+import mvc.Line;
+import mvc.Point;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -25,13 +25,14 @@ import java.awt.event.ActionEvent;
 
 public class LineDialog extends JDialog {
 
+
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	protected JTextField textFieldX1;
 	protected JTextField textFieldY1;
 	protected JTextField textFieldX2;
 	protected JTextField textFieldY2;
 	protected boolean isOk = false;
-	private boolean error = false;
 	protected Color color = Color.black;
 
 	/**
@@ -155,23 +156,18 @@ public class LineDialog extends JDialog {
 								
 							}
 							
-						} catch(Exception ex) {
-							
-							JOptionPane.showMessageDialog(null, "Invalid input!");
-							error = true;
-							
-						}
-						
-						if(!error) {
-						
 							isOk = true;
 							setVisible(false);
 							
+						} catch(Exception ex) {
+							
+							JOptionPane.showMessageDialog(null, "Invalid input!");
+							
 						}
-						
-						error = false;
 					}
+	
 				});
+				
 				{
 					JButton btnChangeColor = new JButton("Change Color");
 					btnChangeColor.addActionListener(new ActionListener() {
@@ -200,6 +196,20 @@ public class LineDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	
+	protected void modifyDialog(Line input) {
+		
+		textFieldX1.setEditable(true);
+		textFieldY1.setEditable(true);
+		textFieldX2.setEditable(true);
+		textFieldY2.setEditable(true);
+		textFieldX1.setText(String.valueOf(input.getStartPoint().getX()));
+		textFieldY1.setText(String.valueOf(input.getStartPoint().getY()));
+		textFieldX2.setText(String.valueOf(input.getEndPoint().getX()));
+		textFieldY2.setText(String.valueOf(input.getEndPoint().getY()));
+		setVisible(true);
+		
 	}
 
 }

@@ -1,4 +1,4 @@
-package geometry;
+package mvc;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,7 +16,7 @@ public abstract class Shape implements Moveable, Comparable{
 			this.selected = selected;
 		}
 		
-		//Apstraktne metode (ne sadrže implementaciju):
+		//Apstraktne metode (ne sadrï¿½e implementaciju):
 		public abstract boolean contains(int x, int y); 
 		public abstract void draw(Graphics g);
 		

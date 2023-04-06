@@ -7,8 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import geometry.Point;
-import geometry.Rectangle;
+import mvc.Point;
+import mvc.Rectangle;
 
 import java.awt.GridBagLayout;
 

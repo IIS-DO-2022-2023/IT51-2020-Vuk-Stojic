@@ -1,9 +1,9 @@
 eclipse.preferences.version=1
-encoding//src/geometry/Circle.java=UTF-8
-encoding//src/geometry/Donut.java=UTF-8
-encoding//src/geometry/Rectangle.java=UTF-8
 encoding//src/geometry/Test.java=UTF-8
 encoding//src/gui/DlgIgrac.java=UTF-8
 encoding//src/gui/FrmIgrac.java=UTF-8
 encoding//src/gui/FrmTest.java=UTF-8
 encoding//src/introduction/Variables.java=UTF-8
+encoding//src/mvc/Circle.java=UTF-8
+encoding//src/mvc/Donut.java=UTF-8
+encoding//src/mvc/Rectangle.java=UTF-8

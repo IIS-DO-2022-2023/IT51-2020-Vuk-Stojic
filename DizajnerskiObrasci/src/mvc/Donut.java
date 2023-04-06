@@ -1,4 +1,4 @@
-package geometry;
+package mvc;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -105,10 +105,9 @@ public class Donut extends Circle{
 		
 		super.setInnerColor(innerColor);
 		super.draw(g); //Draws a circle (Outer)
-		super.setInnerColor(new Color(0f, 0f, 0f, 0f));
 		
 		//Draws an inner circle
-		g.setColor(Color.white);
+		g.setColor(innerColor);
 		g.fillOval(getCenter().getX() - innerRadius, getCenter().getY() - innerRadius, 2 * innerRadius, 2 * innerRadius);
 		g.setColor(color);
 		g.drawOval(getCenter().getX() - innerRadius,getCenter().getY() - innerRadius, 2*innerRadius, 2*innerRadius);

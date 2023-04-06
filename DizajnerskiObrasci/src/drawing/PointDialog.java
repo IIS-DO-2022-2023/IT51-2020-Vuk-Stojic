@@ -10,8 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import geometry.Line;
-import geometry.Point;
+import mvc.Point;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -25,13 +24,13 @@ import java.awt.event.ActionEvent;
 
 public class PointDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	protected JTextField textFieldX;
 	protected JTextField textFieldY;
 	protected Color color = Color.black;
 	protected JColorChooser colorChooser = new JColorChooser();
 	protected boolean isOk = false;
-	private boolean error = false;
 
 	/**
 	 * Launch the application.
@@ -128,30 +127,23 @@ public class PointDialog extends JDialog {
 								
 							}
 							
-						} catch(Exception ex) {
-							
-							JOptionPane.showMessageDialog(null, "Invalid input!");
-							error = true;
-							
-						}
-						
-						if(!error) {
-							
 							isOk = true;
 							setVisible(false);
 							
+						} catch(Exception ex) {
+							
+							JOptionPane.showMessageDialog(null, "Invalid input!");
+							
 						}
-						error = false;
 						
 					}
 				});
 				{
 					JButton btnChangeColor = new JButton("Change Color");
-					JColorChooser colorChooser = new JColorChooser();
 					btnChangeColor.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							
-							PnlFrame.pointDialog.color = colorChooser.showDialog(PnlFrame.pointDialog, "Choose A Color", color);
+							PnlFrame.pointDialog.color = JColorChooser.showDialog(PnlFrame.pointDialog, "Choose A Color", color);
 							
 						}
 					});
@@ -174,6 +166,16 @@ public class PointDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	
+	protected void modifyDialog(Point input) {
+		
+		textFieldX.setEditable(true);
+		textFieldY.setEditable(true);
+		textFieldX.setText(String.valueOf(input.getX()));
+		textFieldY.setText(String.valueOf(input.getY()));
+		setVisible(true);
+		
 	}
 
 }
